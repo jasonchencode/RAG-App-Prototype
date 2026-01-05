@@ -16,23 +16,23 @@ The RAG Pipeline works like this:
 
 ## Tools & Technologies Used
 
-- **LlamaIndex** 
+- **LlamaIndex:**   
   Used for loading PDF files and splitting them into semantically meaningful text chunks
 
-- **OpenAI**  
+- **OpenAI:**   
   Used to generate text embeddings and to produce final answers using a large language model 
 
-- **Qdrant** 
+- **Qdrant:**   
   A vector database used to store embeddings and perform similarity search
 
-- **FastAPI**  
+- **FastAPI:**   
   Serves as the API layer that handles ingestion and query requests
 
-- **Inngest** 
+- **Inngest:**   
   Orchestrates background workflows like document ingest, embedding, retrieval, and answer generation
 
-- **Streamlit** 
+- **Streamlit:**   
   Provides a simple web-based user interface to interact with the system
 
-- **Docker** 
+- **Docker:**   
   Used to run Qdrant locally in a containerized environment
