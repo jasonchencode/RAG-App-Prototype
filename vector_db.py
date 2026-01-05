@@ -2,21 +2,23 @@ from qdrant_client import QdrantClient
 from qdrant_client.models import VectorParams, Distance, PointStruct
 
 class QdrantStorage: 
+    # Initialize Qdrant client and create collection if it does not exist
     def __init__(self, url="http://localhost:6333", collection="docs", dim=3072):
-        self.client = QdrantClient(url=url, timeout=30)
+        self.client = QdrantClient(url=url, timeout=30) # if no response, wait 30 seconds before raising an error
         self.collection = collection
         if not self.client.collection_exists(self.collection):
             self.client.create_collection(
                 collection_name=self.collection,
-                vcectors_config=VectorParams(size=dim, distance=Distance.COSINE),
+                vectors_config=VectorParams(size=dim, distance=Distance.COSINE),
             )
-    
+    # Upsert vectors and metadata in collection
     def upsert(self, ids, vectors, payloads):
         points = [PointStruct(id=ids[i], vector=vectors[i], payload=payloads[i]) for i in range(len(ids))]
-        self.client.upsert(self.collection, point=points)
+        self.client.upsert(self.collection, points=points)
 
+    # Search for most similar vectors to a query embedding
     def search(self, query_vector, top_k: int = 5):
-        results = self.client.serach(
+        results = self.client.search(
             collection_name=self.collection,
             query_vector=query_vector,
             with_payload=True,
@@ -25,6 +27,7 @@ class QdrantStorage:
         contexts = []
         sources = set()
 
+        # Extract relevant text and sources from results, defaulting to empty values if missing
         for r in results:
             payload = getattr(r, "payload", None) or {}
             text = payload.get("text", "")
